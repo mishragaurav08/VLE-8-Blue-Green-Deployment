@@ -1,0 +1,27 @@
+---
+- name: Configure the VLE-8 DevOps host
+  hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+    - name: Ensure Docker is installed
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: false
+
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Verify Docker is available
+      ansible.builtin.command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Display Docker version
+      ansible.builtin.debug:
+        msg: "{{ docker_version.stdout }}"
